@@ -2,11 +2,14 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: goserver-hpa
-spec:
+spec: # qual é o alvo que HPA vai gerenciar, no caso vai ser o Deployment que gerencia a ReplicaSet, e o ReplicaSet que gerencia o Pod 
   scaleTargetRef:
     apiVersion: apps/v1
-    name: goserver
-    kind: Deployment
-  minReplicas: 1
-  maxReplicas: 30
-  targetCPUUtilizationPercentage: 25
+    name: goserver # name do deployment
+    kind: Deployment # o alvo
+  minReplicas: 1 # para estudo esta 1, mas nunca menos que 2
+  maxReplicas: 5 # o Hpa cria no máximo réplicas
+  targetCPUUtilizationPercentage: 5 
+  # para estudo aqui esta 30 (se  no deployment esta cpu: "0.3", significa que quando atingir "0.1", outro pods vai ser escalonado)
+  # Geralmente coloca-se 70 ou 80, mas vai depender do tempo que demora para um Pod ficar pronto, 
+  # pois se colocarmos 90,  pode ser quando um Pod atinja esse percentual, não de tempo de escalar um novo pod

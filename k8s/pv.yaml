@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv1
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce # Os Pods pode gravar e ler desde que o Pod esteja dentro do mesmo node. Outras opções é ReadWriteMany e ReadOlyMany 

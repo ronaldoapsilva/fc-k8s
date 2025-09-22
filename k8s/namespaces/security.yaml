@@ -6,28 +6,27 @@ metadata:
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: server-read
-rules:
-- apiGroups: [""]
+rules: # api groups - determina os recurso que podemos trabalhar
+- apiGroups: [""] # aqui todos pode ver com cli `kubectl api-resources` a coluna APIVERSION vai esta v1 apensa
   resources: ["pods","services"]
   verbs: ["get","watch","list"]
-- apiGroups: ["apps"]
+- apiGroups: ["apps"] # aqui nome do grupo pode ver com cli `kubectl api-resources` a coluna APIVERSION vai ser <grou name>/v1
   resources: ["deployments"]
   verbs: ["get","watch","list"]  
   
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding # fazer o binding com algum objecto no caso aqui ServiceAccount
 metadata:
   name: server-read-bind
 subjects:
-- kind: ServiceAccount
-  name: server
-  namespace: prod
+- kind: ServiceAccount # tipo ServiceAccount
+  name: server # linha server serviceaccount metada>name
+  namespace: dev
 roleRef:
-  kind: ClusterRole
-  name: server-read
-  apiGroup: rbac.authorization.k8s.io
+  kind: Role # vou atribui serviceaccount chamada account
+  name: server-read # pego objemo Role>name> server-read
+  apiGroup: rbac.authorization.k8s.io # aqui nome do grupo pode ver com cli `kubectl api-resources` a coluna APIVERSION vai ser <grou name>/v1

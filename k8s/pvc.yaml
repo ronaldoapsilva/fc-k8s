@@ -4,7 +4,7 @@ metadata:
   name: goserver-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce # Os Pods pode gravar e ler desde que o Pod esteja dentro do mesmo node. Outras opções é ReadWriteMany e ReadOlyMany
   resources:
     requests:
-      storage: 5Gi
+      storage: 5Gi # Espaço que eu preciso

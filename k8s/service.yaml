@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: goserver-service
 spec:
-  selector:
-    app: goserver
-  type: ClusterIP
+  selector: # vai ser resposável para filtrar todos Pods para incoporar no serviço
+    app: goserver # aqui o valor é que foi passado do matchLabels no deployment 
+  type: LoadBalancer
   ports:
-  - name: goserver-service
-    port: 80
-    targetPort: 8000
-    protocol: TCP
+    - name: goserver-service
+      port: 9000 # sem o targetPort aqui a port tem que ser o do container     
+      targetPort: 8080 # aqui é a porta do container
+      protocol: TCP

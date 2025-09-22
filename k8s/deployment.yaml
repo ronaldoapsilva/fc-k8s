@@ -5,50 +5,51 @@ metadata:
   labels:
     app: goserver
 spec:
-  selector:
-    matchLabels:
-      app: goserver    
+  namespace: dev
+  selector: # selector acessar a label que tenha o nome, filtrar para verificar
+    matchLabels: 
+      app: goserver # esse valor foi passado no service.yaml, para que o service yaml pegue todos pods criado aqui
   replicas: 1
   template:
     metadata:
-      labels:
-        app: "goserver"
+      labels: # eu posso ter vários Pod com a mesma label, assim posso filtras os meus pods 
+          app: "goserver" # esse valor é usado hpa.yaml e service.yaml para eles filtrarem os pods criado por esse deploytment
     spec:
       containers:
-        - name: goserver
-          image: "wesleywillians/hello-go:v9.6"
+        - name: "goserver"
+          image : "ronaldoapsilva85/hello-go:v9.6"
 
           resources:
-            requests: 
-              cpu: "0.05"
-              memory: 20Mi
-            limits:
-              cpu: "0.05"
+            requests: # minímo exigido para o container rodar, se o container precisar de mais, ele não roda. Esses recursos serão reservados para cada replicas no cluster, e se o cluster não tiver recurso o POD fica pendente até o cluster liberar o recurso
+              cpu: "0.3" # vCPU ->  Se o cluster tem 1000m (milicores), aqui iremos usar 100m para o POD criado aqui. Podemos settar 100m or  "0.1"
+              memory: 20Mi # 20 megas para saber qual o valor usar, precisa testar e fazer benchmarketing
+            limits: # máximo 
+              cpu: "0.3" # o máximo que o container pode atingir. Boa prática, é calcular a quantidade de replicas que vai criar para não ultrapassar o cluster
               memory: 25Mi
 
-          startupProbe:
+          startupProbe: # faz a verifacação no processo de inicialização, e somente ele esta pronto e readiness e liveness começa os seus processos
             httpGet:
               path: /healthz
-              port: 8000
-            periodSeconds: 4
+              port: 8080
+            periodSeconds: 3
             failureThreshold: 30
 
-          readinessProbe:
+          readinessProbe: # faz a verificação se a aplicação esta inicilizado e rodando
             httpGet:
               path: /healthz
-              port: 8000
+              port: 8080
             periodSeconds: 3
             failureThreshold: 1
-            # initialDelaySeconds: 10
+            # initialDelaySeconds: 10 # se a aplicação demora 10 segundos para começar, aqui configuro para esperar antes de começar fazer requisição
 
-          livenessProbe:
+          livenessProbe: # faz verificação para reiniciar o container
             httpGet:
-              path: /healthz
-              port: 8000
-            periodSeconds: 5
-            failureThreshold: 1
-            timeoutSeconds: 1
-            successThreshold: 1
+              path: /healthz # rota do app
+              port: 8080 # porta do container
+            periodSeconds: 5 # aqui cada 5 segundo vai realizar o test
+            failureThreshold: 1 # é a quantidade de vezes de teste, se der 3 erros para reinicia o container
+            timeoutSeconds: 1 # tempo para completar a requisição acima de 1 segundo vai dar failure
+            successThreshold: 1 # é a quantidade de vezes de teste com sucesso para confimar que o app esta live
             # initialDelaySeconds: 15
 
           envFrom:
@@ -56,23 +57,22 @@ spec:
                 name: goserver-env
             - secretRef:
                 name: goserver-secret
-          
-          volumeMounts:
-            - mountPath: "/go/myfamily"
+          volumeMounts: # montar volume no container
+            - mountPath: "/go/myfamily" # aqui vai ser o path dentro do container
               name: config
-              readOnly: true
-            - mountPath: "/go/pvc"
+            - mountPath: "go/pvc"
               name: goserver-volume
-
-      volumes:
+              # abaixo queira apenas cria o arquivo para leitura
+              # readOnly: true
+      # a indentação do volumes esta no nível do containers
+      # pois volumes pode ser usado para qualquer container
+      volumes: 
         - name: goserver-volume
           persistentVolumeClaim:
             claimName: goserver-pvc
-
         - name: config
           configMap:
-            name: configmap-family
+            name: configmap-family # nome do ConfigMap
             items:
             - key: members
-              path: "family.txt"  
-      
+              path: "family.txt" # nome do arquivo que vai ser criado

@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: "goserver"
-  labels:
+  labels: # eu posso ter vários Pod com a mesma label, assim posso filtras os meus pods 
     app: "goserver"
 spec:
   containers:
-    - name: goserver
-      image: "wesleywillians/hello-go:latest"
+    - name: "goserver"
+      image : "ronaldoapsilva85/hello-go:latest"

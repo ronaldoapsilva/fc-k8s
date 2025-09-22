@@ -1,23 +1,26 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-host
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    cert-manager.io/cluster-issuer: "letsencrypt"
-    ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager-manager.io/cluster-issuer: "letsencrypt" # cluster-issue.yaml name
+    ingress.kubernetes.io/force-ssl-redirect: "true" # plugin redirecionar o user quando ele acessa http para https
 spec:
+  ingressClassName: nginx
   rules:
-  - host: "ingress.fullcycle.com.br"
+  - host: "ingress.fullcycle.com.br" # domínio um dos hosts que vai ser aceito na regras do ingresso
     http:
       paths:
       - pathType: Prefix
-        path: "/admin"
         backend:
-          serviceName: goserver-service
-          servicePort: 80
+          service:
+            name: goserver-service # service.yaml name
+            port: 
+              number: 9000  # a mesma que esta no service.yaml
+        path: "/admin"
+
   tls:
   - hosts:
     - "ingress.fullcycle.com.br"
-    secretName: letsencrypt-tls
- 
+    secretName: letsencrypt-tls # cluster-issue.yaml>spec>acme>privateKeySecretRef>name

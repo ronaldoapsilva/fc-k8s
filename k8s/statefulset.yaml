@@ -4,10 +4,10 @@ metadata:
   name: mysql
 spec:
   replicas: 4
-  serviceName: mysql-h
+  serviceName: mysql-h # quando o Statefulset for criado, com o serviceName, ele sabe que existe um serviço o mysql-h criado, com clusteIP
   selector:
       matchLabels:
-        app: mysql
+        app: mysql # o mysql-service-h.yaml fai selecionar esse StatefulSet através desse valor
   template:
     metadata:
       labels:
@@ -21,7 +21,7 @@ spec:
               value: root
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: mysql-volume
+              name: mysql-volume # o nome do volume que esta no volumeClaimTemplates
 
   volumeClaimTemplates:
   - metadata:

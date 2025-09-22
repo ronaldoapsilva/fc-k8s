@@ -1,0 +1,21 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        // "_k8s": true,
+        // "Dockerfile": true,
+        // "_server.go": true
+    },
+    "workbench.colorTheme": "Default Light Modern",
+    "sonarlint.analysisExcludesStandalone": "k8s/deployment.yaml",
+    "sonarlint.analyzerProperties": {},
+    "vs-kubernetes": {
+        "disable-linters": [
+            "resource-limits"
+        ]
+    }
+}

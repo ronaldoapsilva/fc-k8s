@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+  namespace: cert-manager 
+spec:
+  acme: # tipo de certificado
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ronaldoapsil_@hotmail.com # adicionar o email responsavel
+    privateKeySecretRef: # nome do certificado para gerar
+      name: letsencrypt-tls
+    solvers: # utilizar o https 
+    - http01:
+        ingress:
+          class: nginx

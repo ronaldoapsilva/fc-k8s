@@ -14,7 +14,7 @@ spec:
       serviceAccount: server
       containers:
       - name: server
-        image: wesleywillians/hello-express
+        image: "ronaldoapsilva85/hello-go:v2"
         resources:
           limits:
             memory: "128Mi"

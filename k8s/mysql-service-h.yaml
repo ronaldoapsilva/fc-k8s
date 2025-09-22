@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: mysql-h
 spec:
-  selector:
-    app: mysql
+  selector: # vai ser resposável para filtrar todos Pods para incoporar no serviço
+    app: mysql # aqui o valor é que foi passado do matchLabels no statefulset.yaml 
   ports:
     - port: 3306
-  clusterIP: None
+  clusterIP: None # None é para avisar o cluster que ele não vai trabalhar com IP, mas sim com DNS
